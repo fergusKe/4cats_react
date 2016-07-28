@@ -8,6 +8,24 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.js"></script>
 </head>
 <body>
-	<div>hello, world</div>
+	<div id="app"></div>
 </body>
+<script type="text/babel">
+	// const text = 'hello world';
+	// const texts = [
+	// 	<div>1</div>,
+	// 	<div>2</div>,
+	// 	<div>3</div>
+	// ];
+	const number = [1, 2, 3];
+	ReactDOM.render(
+		// <h1>
+		// 	<small>{texts}</small>
+		// </h1>,
+		<h1>
+			<small>{number.map(n => <div>{n}</div>)}</small>
+		</h1>,
+		document.getElementById('app')
+	)
+</script>
 </html>
