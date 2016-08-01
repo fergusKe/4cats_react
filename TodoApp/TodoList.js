@@ -2,12 +2,17 @@ const { TodoItem } = window.App;
 
 class TodoList extends React.Component {
   render() {
-    const { todos } = this.props;
+    const { 
+      todos,
+      onDeleteTodo
+    } = this.props;
     const element = todos.map((todo) => (
       <li key={todo.id}>
         <TodoItem 
           title={todo.title} 
-          completed={todo.completed} />
+          completed={todo.completed} 
+          onDelete={() => onDeleteTodo && onDeleteTodo(todo.id)}
+          />
       </li>
     ));
     return (
@@ -16,6 +21,11 @@ class TodoList extends React.Component {
       </ul>
     );
   }
+}
+
+TodoList.propTypes = {
+  todos: React.PropTypes.arrayOf(React.PropTypes.object).isRequired,
+  onDeleteTodo: React.PropTypes.func
 }
 
 window.App.TodoList = TodoList;
