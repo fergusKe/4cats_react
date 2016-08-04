@@ -3,11 +3,11 @@ const { ActionTypes, AppDispatcher } = window.App;
 const CHANGE_EVENT = 'CHANGE';
 const _emmiter = new EventEmitter();
 
-// 管理 todos 資料
+// 1. 管理 todos 資料
 let todos = [];
 
-// 將原本放在 TodoApp 中的業務邏輯，放到 Store 中；
-// 或者也可以開一支 utils/TodoUtils.js 另外放！
+// 2. 將原本放在 TodoApp 中的業務邏輯，放到 Store 中；
+//    或者你也可以開一支 utils/TodoUtils.js 另外放！
 const _createTodo = (todos, title) => {
 	todos.push({
 		id: todos[todos.length - 1].id + 1,
@@ -42,6 +42,10 @@ window.app.TodoStore = {
 		_emmiter.on(CHANGE_EVENT, callback);
 		return () => _emmiter.removeListener(CHANGE_EVENT, callback);
 	},
+	// 4. 向 AppDispatcher 註冊 callback，並根據 action.type 改變 todos
+  //
+  //    註：register() 會回傳 token，可以用在當 Store 有依賴關係，必須調整 dispatch 順序時。
+  //    例：Dispatcher.waitFor([ token1, token2 ])
 	dispatchToken: AppDispatcher.register((action) => {
     switch (action.type) {
       case ActionTypes.LOAD_TODOS_SUCCESS:
