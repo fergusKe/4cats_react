@@ -1,4 +1,6 @@
 const {
+	TodoActions,
+  TodoStore,
 	TodoHeader,
 	TodoList,
 	InputField
@@ -8,16 +10,26 @@ class TodoApp extends React.Component {
 	constructor(props, context) {
 		super(props, context);
 		this.state = {
-			todos: []
+			todos: TodoStore.getAll()
 		}
 	}
 	
 	// componentDidMount在元件第一次 render 後，會被呼叫
 	componentDidMount() {
-	  fetch('./todos.json')                         // 1. 使用 fetch 回傳的是 promise 物件
-	    .then((response) => response.json())        // 2. 解析 response 資料，將它轉成 js 物件
-	    .then((todos) => this.setState({ todos })); // 3. 更新元件 state
+		// 4. 向 Server 請求資料改為調用 TodoActions
+	  TodoActions.loadTodos();
+
+	  // 5. 向 TodoStore 註冊監聽器：
+    //    當監聽器被觸發，便讓 state 與 TodoStore 資料同步
+	  this._removeChangeListener = TodoStore.addChangeListener(
+      () => this.setState({ todos: TodoStore.getAll() })
+    );
 	}
+
+	componentWillUnmount() {
+    // 6. 向 TodoStore 註銷監聽器
+    this._removeChangeListener();
+  }
 
 	render() {
 		const { todos } = this.state;
@@ -30,49 +42,17 @@ class TodoApp extends React.Component {
 				/>
 				<InputField 
 					placeholder="新增待辦事項" 
-					onSubmitEditing={(title) => this.setState({
-						todos: _createTodo(todos, title)
-					})}
+					onSubmitEditing={ TodoActions.createTodo}
 				/>
 				<TodoList 
 				todos={todos} 
-				onUpdateTodo={(id, title) => this.setState({
-					todos: _onUpdateTodo(todos, id, title)
-				})}
-				onToggleTodo={(id, completed) => this.setState({
-					todos: _toggleTodo(todos, id, completed)
-				})}
-				onDeleteTodo={(id) => this.setState({
-					todos: _deleteTodo(todos, id)
-				})}
+				onUpdateTodo={ TodoActions.onUpdateTodo }
+				onToggleTodo={ TodoActions.toggleTodo }
+				onDeleteTodo={ TodoActions.deleteTodo}
 				/>
 			</div>
 		)
 	}
 }
-
-const _createTodo = (todos, title) => {
-	todos.push({
-		id: todos[todos.length - 1].id + 1,
-		title,
-		completed: false
-	});
-	return todos;
-};
-const _onUpdateTodo = (todos, id, title) => {
-	const target = todos.find((todo) => todo.id === id);
-	if (target) target.title =title;
-	return todos;
-}
-const _toggleTodo = (todos, id, completed) => {
-	const target = todos.find((todo) => todo.id === id);
-	if (target) target.completed = completed;
-	return todos;
-};
-const _deleteTodo = (todos, id) => {
-	const idx = todos.findIndex((todo) => todo.id === id);
-	if (idx !== -1) todos.splice(idx, 1);
-	return todos;
-};
 
 window.App.TodoApp = TodoApp;

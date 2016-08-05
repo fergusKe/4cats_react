@@ -1,10 +1,13 @@
-const { ActionTypes, AppDispatcher } = window.App;
+const {
+  ActionTypes,
+  AppDispatcher
+} = window.App;
 
 const CHANGE_EVENT = 'CHANGE';
-const _emmiter = new EventEmitter();
+const _emitter = new EventEmitter();
 
 // 1. 管理 todos 資料
-let todos = [];
+let _todos = [];
 
 // 2. 將原本放在 TodoApp 中的業務邏輯，放到 Store 中；
 //    或者你也可以開一支 utils/TodoUtils.js 另外放！
@@ -32,14 +35,14 @@ const _deleteTodo = (todos, id) => {
 	return todos;
 };
 
-window.app.TodoStore = {
+window.App.TodoStore = {
 	// 6. 回傳 todos 陣列
 	getAll() {
 		return _todos;
 	},
 	// 3. 提供註冊改變事件的 API，並回傳註銷函數
 	addChangeListener(callback) {
-		_emmiter.on(CHANGE_EVENT, callback);
+		_emitter.on(CHANGE_EVENT, callback);
 		return () => _emmiter.removeListener(CHANGE_EVENT, callback);
 	},
 	// 4. 向 AppDispatcher 註冊 callback，並根據 action.type 改變 todos
