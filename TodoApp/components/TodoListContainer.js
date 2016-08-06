@@ -1,24 +1,15 @@
+const { Container } = FluxUtils;
 const { TodoStore, TodoActions, TodoList } = window.App;
 
 class TodoListContainer extends React.Component {
-	constructor(props, context) { 
-  	/* 1. 向 TodoStore 取得初始資料，並同步到 state 中 */ 
-  	super(props, context);
-  	this.state = {
-  		todos: TodoStore.getAll()
-  	};
+	static getStores() {
+    return [ TodoStore ]; // 1. 向 Store 註冊及註銷監聽器
   }
 
-  componentDidMount() { 
-  	/* 2. 向 TodoStore 註冊監聽器 */ 
-  	this._removeChangeListener = TodoStore.addChangeListener(
-      () => this.setState({ todos: TodoStore.getAll() })
-    );
-	}
-
-  componentWillUnmount() { 
-  	/* 3. 向 TodoStore 註銷監聽器 */
-  	this._removeChangeListener(); 
+  static calculateState(prevState) {
+    return {
+      todos: TodoStore.getState(), // 2. 同步 Store 中的狀態至元件的 state 中
+    };
   }
 
   render() {
@@ -33,4 +24,5 @@ class TodoListContainer extends React.Component {
   }
 }
 
-window.App.TodoListContainer = TodoListContainer;
+// 3. 使用 create() 建立 Container component
+window.App.TodoListContainer = Container.create(TodoListContainer);
