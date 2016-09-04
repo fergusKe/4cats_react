@@ -9,6 +9,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/1.0.0/fetch.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/flux/2.1.1/Flux.js"></script>
   <script src="https://cdn.rawgit.com/facebook/flux/master/dist/FluxUtils.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/redux/3.4.0/redux.js"></script>
   <script>
   	window.App = {};
   </script>	
@@ -30,11 +31,5 @@
 <body>
 	<div id="app"></div>
 </body>
-<script type="text/babel">
-	const { TodoApp } = window.App;
-	ReactDOM.render(
-		<TodoApp />,
-		document.getElementById('app')
-	)
-</script>
+<script type="text/babel" src="./main.js"></script>
 </html>
